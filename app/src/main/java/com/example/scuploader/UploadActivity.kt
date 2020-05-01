@@ -72,15 +72,19 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
-
         storageRef.putFile(fileUri).addOnSuccessListener {                                                //uploading file in storage
            // Toast.makeText(this, "Upload file completed", Toast.LENGTH_SHORT).show()
             storageRef.downloadUrl.addOnSuccessListener {
                 val urlToDatabase:String=it.toString()
                //Toast.makeText(this,urlToDatabase,Toast.LENGTH_LONG).show()
+                if(yearFolder!=null){
+                    if(subjectFolder!=null){
+
                 if(fileName!=null)
                 {
-            storeFileDetailInDatabase("Pata nai",fileName)}
+            storeFileDetailInDatabase(urlToDatabase,fileName,yearFolder,subjectFolder)}
+                }
+                }
                 else{
                     Toast.makeText(this,"Kuch th null h bhaiya",Toast.LENGTH_LONG).show()
                 }
@@ -94,10 +98,10 @@ class UploadActivity : AppCompatActivity() {
 
     }
 
-    fun storeFileDetailInDatabase(fileURL: String,fileName:String){
+    fun storeFileDetailInDatabase(fileURL: String,fileName:String,yearFolder:String,subjectFolder:String){
 
         val newFileName=fileName.removeSuffix(".pdf")
-        val ref= FirebaseDatabase.getInstance().getReference("/files/"+newFileName)
+        val ref= FirebaseDatabase.getInstance().getReference("/files/$yearFolder/$subjectFolder/"+newFileName)
         val file= com.example.scuploader.File(fileName,fileURL)
 
         ref.setValue(file).addOnFailureListener {
